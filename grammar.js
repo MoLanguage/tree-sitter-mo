@@ -54,7 +54,7 @@ module.exports = grammar({
 
     struct_decl: $ => seq(
       $.struct_keyword,
-      $.identifier,
+      field('name', $.identifier),
       repeat($.line_break),
       '{',
       optional(seq(
@@ -68,7 +68,7 @@ module.exports = grammar({
     
     fn_decl: $ => seq(
       $.fn_keyword,
-      $.identifier,
+      field('name', $.identifier),
       '(',
       optional($.fn_param_list),
       ')',
