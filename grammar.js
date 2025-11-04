@@ -47,13 +47,13 @@ module.exports = grammar({
     // ─────────────────────────────
 
     use_decl: $ => seq(
-      'use',
+      $.use_keyword,
       $.module_path,
       optional($.string_literal)
     ),
 
     struct_decl: $ => seq(
-      'struct',
+      $.struct_keyword,
       $.identifier,
       repeat($.line_break),
       '{',
@@ -63,11 +63,11 @@ module.exports = grammar({
       )),
       '}'
     ),
-
+    
     struct_field: $ => seq($.identifier, $.type_expr),
-
+    
     fn_decl: $ => seq(
-      'fn',
+      $.fn_keyword,
       $.identifier,
       '(',
       optional($.fn_param_list),
@@ -104,18 +104,18 @@ module.exports = grammar({
       $.expr_stmt
     ),
 
-    for_loop: $ => seq('for', $.expression, $.code_block),
+    for_loop: $ => seq($.for_keyword, $.expression, $.code_block),
 
     if_stmt: $ => seq(
-      'if',
+      $.if_keyword,
       $.expression,
       $.code_block,
-      optional(seq('else', $.code_block))
+      optional(seq($.else_keyword, $.code_block))
     ),
 
-    ret_stmt: $ => seq('ret', choice($.expression, $.line_break)),
+    ret_stmt: $ => seq($.ret_keyword, choice($.expression, $.line_break)),
 
-    defer_stmt: $ => seq('defer', $.stmt),
+    defer_stmt: $ => seq($.defer_keyword, $.stmt),
 
     assignment: $ => seq($.unary_expr, '=', $.expression),
 
@@ -259,5 +259,18 @@ module.exports = grammar({
     line_break: _ => token(choice(/\r\n/, /\n/)),
 
     binary_op: _ => choice('+', '-', '*', '/', '%', '&', '|', '^', '~', '<<', '>>'),
+
+    // ─────────────────────────────
+    // Explicit keyword rules for syntax highlighting
+    // ─────────────────────────────
+
+    use_keyword: _ => 'use',
+    fn_keyword: _ => 'fn',
+    if_keyword: _ => 'if',
+    else_keyword: _ => 'else',
+    ret_keyword: _ => 'ret',
+    defer_keyword: _ => 'defer',
+    struct_keyword: _ => 'struct',
+    for_keyword: _ => 'for',
   },
 });
